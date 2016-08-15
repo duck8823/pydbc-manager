@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pydbc.executable import Executable
 from pydbc.where import Where
 import ast

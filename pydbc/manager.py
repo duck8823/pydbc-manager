@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pydbc.fromcase import FromCase
 from pydbc.executable import Executable
 import re

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 import sqlite3 as driver
 

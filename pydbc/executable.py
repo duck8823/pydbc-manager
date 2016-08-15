@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Executable(object):
 	def __init__(self, manager, sql):
 		self._manager = manager
