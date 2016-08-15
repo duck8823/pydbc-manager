@@ -1,9 +1,9 @@
-# GodbcManager
+# PydbcManager
 [![Build Status](https://travis-ci.org/duck8823/pydbc-manager.svg?branch=master)](https://travis-ci.org/duck8823/pydbc-manager)
-[![Coverage Status](http://coveralls.io/repos/github/duck8823/pydbc-manager/badge.svg?branch=master)](https://coveralls.io/github/duck8823/pydbc-manager?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/duck8823/pydbc-manager/badge.svg?branch=master)](https://coveralls.io/github/duck8823/pydbc-manager?branch=master)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)  
   
-構造体でデータベース操作する  
+クラスでデータベースを操作する    
   
 ## INSTALL
 ```sh
@@ -16,7 +16,7 @@ sudo python setup.py install
 ```python
 # -*- coding: utf-8 -*-
 from pydbc import *
-from sqlite3 as driver
+import sqlite3 as driver
 
 
 # クラスの定義
@@ -24,6 +24,7 @@ class Hoge:
 	id = int
 	name = str
 	flg = bool
+
 
 # データベースへの接続
 manager = connect(driver, "test.db")
@@ -42,7 +43,9 @@ hoge.name = 'name2'
 hoge.flg = False
 manager.insert(hoge).execute()
 # データの取得（リスト）
-manager.frm(Hoge).list()
+rows = manager.frm(Hoge).list()
+for row in rows:
+    print(row.__dict__)
 manager.frm(Hoge).where(Where('name', 'name', Operator.LIKE)).list()
 # データの取得（一意）
 manager.frm(Hoge).where(Where('id', 1, Operator.EQUAL)).single_result()
