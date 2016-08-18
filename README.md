@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/duck8823/pydbc-manager/badge.svg?branch=master)](https://coveralls.io/github/duck8823/pydbc-manager?branch=master)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)  
   
-クラスでデータベースを操作する    
+名前付きタプルでデータベースを操作する    
   
 ## INSTALL
 ```sh
