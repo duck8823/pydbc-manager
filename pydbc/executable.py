@@ -4,11 +4,11 @@ class Executable(object):
 		self._manager = manager
 		self._sql = sql
 
+	# noinspection PyProtectedMember
 	def execute(self):
-		# noinspection PyProtectedMember
-		cursor = self._manager._PydbcManager__connection
+		cursor = self._manager._PydbcManager__connection.cursor()
 		cursor.execute(self._sql)
-		cursor.commit()
+		self._manager._PydbcManager__connection.commit()
 
 	def get_sql(self):
 		return self._sql

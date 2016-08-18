@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from pydbc.executable import Executable
 from pydbc.where import Where
-import ast
-import re
-import inspect
 
 
 class FromCase(object):
@@ -16,28 +13,17 @@ class FromCase(object):
 		self._where = where
 		return self
 
+	# noinspection PyProtectedMember
 	def list(self):
 		result = []
 
-		attrs = filter(lambda a: not re.match("^__.*__$", a[0]), inspect.getmembers(self._entity))
-		columns = []
-		for attr in attrs:
-			columns.append(attr[0])
-
-		# noinspection PyProtectedMember
+		columns = self._entity._fields
 		cursor = self._manager._PydbcManager__connection.cursor()
 		cursor.execute("SELECT %s FROM %s %s" % (", ".join(columns), self._entity.__name__, self._where))
 		rows = cursor.fetchall()
 
 		for row in rows:
-			entity = self._entity()
-			for column in columns:
-				value = row[columns.index(column)]
-				if self._entity.__dict__[column] == bool:
-					value = ast.literal_eval(value)
-
-				setattr(entity, column, value)
-			result.append(entity)
+			result.append(self._entity(*row))
 
 		return result
 

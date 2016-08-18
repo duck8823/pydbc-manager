@@ -1,8 +1,12 @@
 language: python
+services:
+ - postgresql
 python:
  - 3.5
 install:
  - pip install coveralls
+before_script:
+ - psql -c 'create database test;' -U postgres
 script:
  - coverage run --source=pydbc setup.py test
 after_success:

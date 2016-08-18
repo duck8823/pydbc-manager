@@ -2,28 +2,24 @@
 import unittest
 import sqlite3 as driver
 
-from pydbc import connect, Where, Operator
+from pydbc import *
 
-
-class Test:
-	id = int
-	name = str
-	flg = bool
+Test = namedtuple('Test', 'id name')
 
 
 class TestFromCase(unittest.TestCase):
 	def test_list(self):
 		manager = connect(driver, "test.db")
 		manager.drop(Test).execute()
-		manager.create(Test).execute()
+		manager.create(Test(id=int, name=str)).execute()
 
-		manager.insert(_build_test(1, 'name_1', True)).execute()
-		manager.insert(_build_test(2, 'name_2', False)).execute()
+		manager.insert(Test(1, 'name_1')).execute()
+		manager.insert(Test(2, 'name_2')).execute()
 
 		actual = manager.frm(Test).list()
-		self.assertEquals(len(actual), 2)
-		self.assertDictEqual(actual[0].__dict__, {'id': 1, 'name': 'name_1', 'flg': True})
-		self.assertDictEqual(actual[1].__dict__, {'id': 2, 'name': 'name_2', 'flg': False})
+		self.assertEqual(len(actual), 2)
+		self.assertEqual(actual[0], Test(id=1, name='name_1'))
+		self.assertEqual(actual[1], Test(id=2, name='name_2'))
 
 		with self.assertRaises(Exception):
 			manager.frm(Test).where(Where('id', bytearray(), Operator.EQUAL)).list()
@@ -37,14 +33,14 @@ class TestFromCase(unittest.TestCase):
 	def test_single_result(self):
 		manager = connect(driver, "test.db")
 		manager.drop(Test).execute()
-		manager.create(Test).execute()
+		manager.create(Test(id=int, name=str)).execute()
 
-		manager.insert(_build_test(1, 'name_1', True)).execute()
-		manager.insert(_build_test(2, 'name_2', False)).execute()
+		manager.insert(Test(1, 'name_1')).execute()
+		manager.insert(Test(2, 'name_2')).execute()
 
 		actual = manager.frm(Test).where(Where('id', 1, Operator.EQUAL)).single_result()
-		expect = {'id': 1, 'name': 'name_1', 'flg': True}
-		self.assertDictEqual(actual.__dict__, expect)
+		expect = Test(id=1, name='name_1')
+		self.assertEqual(actual, expect)
 
 		with self.assertRaises(Exception):
 			manager.frm(Test).where(Where('id', bytearray(), Operator.EQUAL)).list()
@@ -55,20 +51,13 @@ class TestFromCase(unittest.TestCase):
 	def test_delete(self):
 		manager = connect(driver, "test.db")
 		manager.drop(Test).execute()
-		manager.create(Test).execute()
+		manager.create(Test(id=int, name=str)).execute()
 
-		manager.insert(_build_test(1, 'name_1', True)).execute()
-		manager.insert(_build_test(2, 'name_2', False)).execute()
+		manager.insert(Test(1, 'name_1')).execute()
+		manager.insert(Test(2, 'name_2')).execute()
 
 		manager.frm(Test).where(Where('id', 1, Operator.EQUAL)).delete().execute()
 		actual = manager.frm(Test).single_result()
-		expect = {'id': 2, 'name': 'name_2', 'flg': False}
-		self.assertDictEqual(actual.__dict__, expect)
+		expect = Test(id=2, name='name_2')
+		self.assertEqual(actual, expect)
 
-
-def _build_test(id_, name, flg):
-	test_ = Test()
-	test_.id = id_
-	test_.name = name
-	test_.flg = flg
-	return test_
