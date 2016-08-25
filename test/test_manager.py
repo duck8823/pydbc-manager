@@ -19,7 +19,7 @@ class TestPydbcManager(unittest.TestCase):
 		manager.drop(Test).execute()
 		manager.create(Test(id=int, name=str, flg=bool)).execute()
 
-		cursor = manager._PydbcManager__connection.cursor()
+		cursor = manager._db.cursor()
 		cursor.execute("PRAGMA TABLE_INFO(test)")
 		rows = cursor.fetchall()
 
@@ -36,7 +36,7 @@ class TestPydbcManager(unittest.TestCase):
 
 		manager.drop(Test).execute()
 
-		cursor = manager._PydbcManager__connection.cursor()
+		cursor = manager._db.cursor()
 		cursor.execute("PRAGMA TABLE_INFO(test)")
 		rows = cursor.fetchall()
 
@@ -51,7 +51,7 @@ class TestPydbcManager(unittest.TestCase):
 		manager.insert(Test(2, 'name_2', False)).execute()
 
 		expect = [(1, 'name_1', 'True'), (2, 'name_2', 'False')]
-		cursor = manager._PydbcManager__connection.cursor()
+		cursor = manager._db.cursor()
 		cursor.execute("SELECT id, name, flg FROM test")
 		actual = cursor.fetchall()
 		self.assertEqual(actual, expect, 'データが一致しません.')

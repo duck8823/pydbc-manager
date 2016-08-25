@@ -4,8 +4,8 @@ from pydbc.where import Where
 
 
 class FromCase(object):
-	def __init__(self, manager, entity):
-		self._manager = manager
+	def __init__(self, db, entity):
+		self._db = db
 		self._entity = entity
 		self._where = Where()
 
@@ -18,7 +18,7 @@ class FromCase(object):
 		result = []
 
 		columns = self._entity._fields
-		cursor = self._manager._PydbcManager__connection.cursor()
+		cursor = self._db.cursor()
 		cursor.execute("SELECT %s FROM %s %s" % (", ".join(columns), self._entity.__name__, self._where))
 		rows = cursor.fetchall()
 
@@ -34,4 +34,4 @@ class FromCase(object):
 		return result[0]
 
 	def delete(self):
-		return Executable(self._manager, "DELETE FROM %s %s" % (self._entity.__name__, self._where))
+		return Executable(self._db, "DELETE FROM %s %s" % (self._entity.__name__, self._where))

@@ -9,13 +9,13 @@ def connect(driver, datasource):
 
 class PydbcManager(object):
 	def __init__(self, driver, datasource):
-		self.__connection = driver.connect(datasource)
+		self._db = driver.connect(datasource)
 
 	def frm(self, entity):
-		return FromCase(self, entity)
+		return FromCase(self._db, entity)
 
 	def drop(self, entity):
-		return Executable(self, "DROP TABLE IF EXISTS %s" % entity.__name__)
+		return Executable(self._db, "DROP TABLE IF EXISTS %s" % entity.__name__)
 
 	def create(self, entity):
 		# noinspection PyProtectedMember
@@ -32,11 +32,11 @@ class PydbcManager(object):
 			else:
 				raise Exception('次の型は利用できません: ' + type_.__name__)
 			columns.append("%s %s" % (name, type_))
-		return Executable(self, "CREATE TABLE %s (%s)" % (entity.__class__.__name__, ", ".join(columns)))
+		return Executable(self._db, "CREATE TABLE %s (%s)" % (entity.__class__.__name__, ", ".join(columns)))
 
 	def insert(self, data):
 		sentence = self._create_sentence(data)
-		return Executable(self, "INSERT INTO %s %s" % (data.__class__.__name__, sentence))
+		return Executable(self._db, "INSERT INTO %s %s" % (data.__class__.__name__, sentence))
 
 	@staticmethod
 	def _create_sentence(data):
